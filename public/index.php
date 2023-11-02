@@ -17,10 +17,8 @@ $app->addErrorMiddleware(true, true, true);
 $router = $app->getRouteCollector()->getRouteParser();
 
 $app->get('/', function ($request, $response) use ($router) {
-//    $response->getBody()->write('Welcome to Slim!');
-//    return $response;
-    // Благодаря пакету slim/http этот же код можно записать короче
-     return $response->write('Welcome to Slim!');
+//     return $response->write('Welcome to Slim!');
+    return $this->get('renderer')->render($response, "/index.phtml");
 });
 
 $app->run();

@@ -9,8 +9,8 @@ validate: # проверка файла composer.json
 	composer validate
 
 lint: # запуск phpcs
-	composer exec --verbose phpcs -- --standard=PSR12 src bin tests
-test: # запуск тестов
-	composer exec --verbose phpunit tests
-test-coverage: # покрытие тестами
-	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
+	composer exec --verbose phpcs -- --standard=PSR12 src public
+# test: # запуск тестов
+# 	composer exec --verbose phpunit tests
+# test-coverage: # покрытие тестами
+# 	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
