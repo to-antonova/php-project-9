@@ -107,7 +107,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
             return $response->withRedirect($url);
         }
         $urls['time'] = Carbon::now();
-        $insertIntoTable = $dataBase->query('INSERT INTO urls(name, created_at) VALUES(:name, :time) RETURNING id', $urls);
+        $insertInto = $dataBase->query('INSERT INTO urls(name, created_at) VALUES(:name, :time) RETURNING id', $urls);
 
         $id = $dataBase->query('SELECT MAX(id) FROM urls');
 

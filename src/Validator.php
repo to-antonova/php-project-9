@@ -16,7 +16,7 @@ class Validator
             $errors['urlBlank'] = "URL can't be blank";
         }
 
-        if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             $errors['urlValidate'] = "Not a valid URL";
         }
 
