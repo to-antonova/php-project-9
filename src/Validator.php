@@ -4,7 +4,7 @@ namespace App;
 
 class Validator
 {
-    public function validate($url)
+    public function validate(string $url): array
     {
         $errors = [];
 

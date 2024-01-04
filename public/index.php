@@ -183,6 +183,8 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
         return $response->withRedirect($url);
     }
 
+    $client = new Client();
+    $res = $client->request('GET', $name[0]['name']);
     $document = new Document($res->getBody()->getContents(), false);
     $title = optional($document->first('title'));
     $h1 = optional($document->first('h1'));
