@@ -36,18 +36,6 @@ $container->set('connection', function () {
     return $pdo;
 });
 
-//try {
-//    // подключение к базе данных PostgreSQL
-//    $pdo = Connection::get()->connect();
-//    $tableCreator = new PostgreSQLCreateTable($pdo);
-//
-//    // создание и запрос таблицы из
-//    // базы данных
-//    $tables = $tableCreator->createTables();
-//} catch (\PDOException $e) {
-//    echo $e->getMessage();
-//}
-
 $app = AppFactory::createFromContainer($container);
 $app->add(MethodOverrideMiddleware::class);
 $app->addErrorMiddleware(true, true, true);
@@ -64,7 +52,6 @@ $app->get('/router', function ($request, $response) use ($router) {
 });
 
 $app->get('/', function ($request, $response) {
-//    phpinfo();
     $params = [];
     return $this->get('renderer')->render($response, 'index.phtml', $params);
 });
@@ -114,13 +101,13 @@ $app->post('/urls', function ($request, $response) use ($router) {
 
         $searchName = $dataBase->query('SELECT id FROM urls WHERE name = :name', $urls);
 
-        if (count($serachName) !== 0) {
+        if (count($searchName) !== 0) {
             $url = $router->urlFor('urls.show', ['id' => $searchName[0]['id']]);
             $this->get('flash')->addMessage('success', 'Страница уже существует');
             return $response->withRedirect($url);
         }
         $urls['time'] = Carbon::now();
-        $insertInTable = $dataBase->query('INSERT INTO urls(name, created_at) VALUES(:name, :time) RETURNING id', $urls);
+        $insertIntoTable = $dataBase->query('INSERT INTO urls(name, created_at) VALUES(:name, :time) RETURNING id', $urls);
 
         $id = $dataBase->query('SELECT MAX(id) FROM urls');
 
@@ -142,8 +129,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
 //////////////////////////////////////      /urls/{id}       ///////////////////////////////////////////////
 
 $app->get('/urls/{id}', function ($request, $response, $args) {
-    $id = $args['id'];
-    $messages = $messages = $this->get('flash')->getMessages();
+    $messages = $this->get('flash')->getMessages();
 
     $dataBase = new PgsqlActions($this->get('connection'));
     $dataFromDB = $dataBase->query('SELECT * FROM urls WHERE id = :id', $args);
@@ -176,7 +162,6 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
 
         $url = $router->urlFor('urls.show', ['id' => $url_id]);
         return $response->withRedirect($url);
-
     } catch (ClientException $e) {
         if ($e->getResponse()->getStatusCode() != 200) {
             $checkUrl['status'] = $e->getResponse()->getStatusCode();
@@ -191,9 +176,14 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
             $url = $router->urlFor('urls.show', ['id' => $url_id]);
             return $response->withRedirect($url);
         }
+    } catch (Throwable $e) {
+        $this->get('flash')->addMessage('failure', 'Произошла ошибка при проверке');
+
+        $url = $router->urlFor('urls.show', ['id' => $url_id]);
+        return $response->withRedirect($url);
     }
 
-    $document = new Document($name[0]['name'], true);
+    $document = new Document($res->getBody()->getContents(), false);
     $title = optional($document->first('title'));
     $h1 = optional($document->first('h1'));
     $meta = optional($document->first('meta[name="description"]'));
