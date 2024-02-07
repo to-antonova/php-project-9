@@ -1,19 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Анализатор страниц</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="min-vh-100 d-flex flex-column">
 <header class="flex-shrink-0">
-    <nav class="navbar navbar-expend-lg navbar-dark bg-dark">
-        <div class="container-fluid d-flex justify-content-start px-2">
-            <a href="/" class="navbar-brand text-light">Анализатор страниц</a>
-            <a href="/" class="text-white-50 nav-link p-2">Главная</a>
-            <a href="/urls" class="text-white-50 nav-link p-2 ">Сайты</a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
+        <a class="navbar-brand" href="/">Анализатор страниц</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/urls">Сайты</a>
+                </li>
+            </ul>
         </div>
     </nav>
 </header>
@@ -24,49 +34,61 @@
 <?php elseif(isset($flash['warning'][0])): ?>
     <div class="alert alert-warning" role="alert"><?= htmlspecialchars($flash['warning'][0]) ?></div>
 <?php endif ?>
-<main class="container mt-3">
-    <p class="h1">Сайт: <?= htmlspecialchars($name) ?></p>
-    <table class="table table-hover table-bordered" data-test="url">
-        <tbody>
-        <tr>
-            <th class="col-4">ID</th>
-            <td><?= htmlspecialchars($id) ?></td>
-        </tr>
-        <tr>
-            <th class="col-4">Имя</th>
-            <td><?= htmlspecialchars($name) ?></td>
-        </tr>
-        <tr>
-            <th class="col-4">Дата создания</th>
-            <td><?= htmlspecialchars($created_at) ?></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <h2 class="mt-5 mb-3">Проверки</h2>
-    <form action="/urls/<?= htmlspecialchars($id) ?>/checks" class="mb-3" method="post">
-        <input type="submit" class="btn btn-primary" value="Запустить проверку">
-    </form>
-    <table class="table table-hover table-bordered" data-test="checks">
-        <tr>
-            <th>ID</th>
-            <th>Код ответа</th>
-            <th>h1</th>
-            <th>title</th>
-            <th>description</th>
-            <th>Дата создания</th>
-        </tr>
-        <?php foreach ($urls as $item): ?>
+<main class="flex-grow-1">
+    <div class="container-lg mt-3">
+        <h1>Сайт: <?= htmlspecialchars($name) ?></h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-nowrap" data-test="url">
+                <tbody>
+                <tr>
+                    <td>ID</td>
+                    <td><?= htmlspecialchars($id) ?></td>
+                </tr>
+                <tr>
+                    <td>Имя</td>
+                    <td><?= htmlspecialchars($name) ?></td>
+                </tr>
+                <tr>
+                    <td>Дата создания</td>
+                    <td><?= htmlspecialchars($created_at) ?></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <h2 class="mt-5 mb-3">Проверки</h2>
+        <form action="/urls/<?= htmlspecialchars($id) ?>/checks" class="mb-3" method="post">
+            <input type="submit" class="btn btn-primary" value="Запустить проверку">
+        </form>
+        <table class="table table-bordered table-hover" data-test="checks">
+            <tbody>
             <tr>
-                <td><?= htmlspecialchars($item['id'])?></td>
-                <td><?= htmlspecialchars($item['status_code'])?></td>
-                <td><?= htmlspecialchars($item['h1'])?></td>
-                <td><?= htmlspecialchars($item['title'])?></td>
-                <td><?= htmlspecialchars($item['description'])?></td>
-                <td><?= htmlspecialchars($item['created_at']) ?></td>
+                <th>ID</th>
+                <th>Код ответа</th>
+                <th>h1</th>
+                <th>title</th>
+                <th>description</th>
+                <th>Дата создания</th>
             </tr>
-        <?php endforeach ?>
-    </table>
+            <?php foreach ($urls as $item): ?>
+                <tr>
+                    <td><?= htmlspecialchars($item['id']) ?></td>
+                    <td><?= htmlspecialchars($item['status_code']) ?></td>
+                    <td class="text-break"><?= htmlspecialchars($item['h1']) ?></td>
+                    <td class="text-break"><?= htmlspecialchars($item['title']) ?></td>
+                    <td class="text-break"><?= htmlspecialchars($item['description']) ?></td>
+                    <td><?= htmlspecialchars($item['created_at']) ?></td>
+                </tr>
+            <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
 </main>
+<footer class="border-top py-3 mt-5 flex-shrink-0">
+    <div class="container-lg">
+        <div class="text-center">
+            <a href="https://hexlet.io/pages/about" target="_blank">Hexlet</a>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
