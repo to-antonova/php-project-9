@@ -38,12 +38,11 @@
                 <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
                 <form action="/urls" method="post" class="row" required>
                     <div class="col-8">
-                        <input class="form-control form-control-lg"
+                        <input class="form-control form-control-lg is-invalid"
                                 type="text"
                                 name="url[name]"
                                 value=""
-                                placeholder="https://www.example.com"
-                                <?php if (isset($errors['name'])) : ?>is-invalid<?php endif ?>">
+                                placeholder="https://www.example.com">
                         <?php if (isset($errors['name'])) : ?>
                             <div class="invalid-feedback"><?= htmlspecialchars($errors['name']) ?></div>
                         <?php endif ?>
