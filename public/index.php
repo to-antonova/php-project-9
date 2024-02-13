@@ -39,6 +39,10 @@ $container->set('connection', function () {
     return $pdo;
 });
 
+$container->set('flash', function () {
+    return new \Slim\Flash\Messages();
+});
+
 $app = AppFactory::createFromContainer($container);
 $app->add(MethodOverrideMiddleware::class);
 $app->addErrorMiddleware(true, true, true);

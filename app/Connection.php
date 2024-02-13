@@ -20,6 +20,7 @@ final class Connection
      */
     public function connect()
     {
+
         if (getenv('DATABASE_URL')) {
             $databaseUrl = parse_url($_ENV['DATABASE_URL']);
         }
