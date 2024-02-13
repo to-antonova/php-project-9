@@ -22,6 +22,9 @@ use Carbon\Carbon;
 
 session_start();
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->safeload();
+
 $container = new Container();
 $container->set('renderer', function () {
     return new Slim\Views\PhpRenderer(__DIR__ . '/../templates');
