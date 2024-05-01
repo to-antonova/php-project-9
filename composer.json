@@ -4,7 +4,7 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Hexlet\\Code\\": "src/"
+            "Hexlet\\Code\\": "app/"
         },
         "files": [
             "app/Connection.php",
@@ -21,7 +21,7 @@
         "slim/flash": "^0.4.0",
         "twbs/bootstrap": "^5.3",
         "vlucas/valitron": "^1.4",
-        "vlucas/phpdotenv": "^5.5",
+        "vlucas/phpdotenv": "^5.6",
         "laracasts/flash": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
         "imangazaliev/didom": "^2.0",

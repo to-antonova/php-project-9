@@ -39,9 +39,10 @@ $container->set('connection', function () {
     return $pdo;
 });
 
-$container->set('flash', function () {
-    return new \Slim\Flash\Messages();
-});
+//$container->set('router', function () {
+//    $pdo = Connection::get()->connect();
+//    return $pdo;
+//});
 
 $app = AppFactory::createFromContainer($container);
 $app->add(MethodOverrideMiddleware::class);
@@ -83,7 +84,7 @@ $app->get('/urls', function ($request, $response) {
         ORDER BY urls.id DESC'
     );
     $params = ['data' => $dataFromDB];
-    return $this->get('renderer')->render($response, 'urls.phtml', $params);
+    return $this->get('renderer')->render($response, 'urls/index.phtml', $params);
 })->setName('urls.index');
 
 
@@ -148,7 +149,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
         'flash' => $messages,
         'urls' => $dataCheckUrl];
 
-    return $this->get('renderer')->render($response, 'urlsId.phtml', $params);
+    return $this->get('renderer')->render($response, 'urls/show.phtml', $params);
 })->setName('urls.show');
 
 

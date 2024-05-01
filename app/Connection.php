@@ -33,7 +33,7 @@ final class Connection
             $params['password'] = isset($databaseUrl['pass']) ? $databaseUrl['pass'] : null;
         } else {
         // чтение параметров в файле конфигурации ini
-            $params = parse_ini_file('database.ini');
+            $params = parse_ini_file(__DIR__ . '/../database.env');
         }
         if ($params === false) {
             throw new \Exception("Error reading database configuration file");
