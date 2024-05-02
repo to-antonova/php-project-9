@@ -49,7 +49,7 @@ $container->set('router', function () use ($app) {
 $app->get('/', function ($request, $response) {
     $params = [];
 
-//    $this->get('renderer')->setLayout('layout.php');
+    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'index.phtml', $params);
 });
 
@@ -74,7 +74,7 @@ $app->get('/urls', function ($request, $response) {
     );
     $params = ['data' => $dataFromDB];
 
-//    $this->get('renderer')->setLayout('layout.php');
+    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'urls/index.phtml', $params);
 })->setName('urls.index');
 
@@ -115,9 +115,9 @@ $app->post('/urls', function ($request, $response) {
         return $response->withRedirect($url);
     } else {
         if (isset($urls) and strlen($urls['name']) < 1) {
-            $errors['name'] = 'URL не должен быть пустым';
+            $errors['type'] = 'URL не должен быть пустым';
         } elseif (isset($urls)) {
-            $errors['name'] = 'Некорректный URL';
+            $errors['type'] = 'Некорректный URL';
         }
     }
     $params = ['errors' => $errors];
@@ -140,6 +140,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
         'flash' => $messages,
         'urls' => $dataCheckUrl];
 
+    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'urls/show.phtml', $params);
 })->setName('urls.show');
 
