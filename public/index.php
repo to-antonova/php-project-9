@@ -39,36 +39,29 @@ $container->set('connection', function () {
     return $pdo;
 });
 
-//$container->set('router', function () {
-//    $pdo = Connection::get()->connect();
-//    return $pdo;
-//});
-
 $app = AppFactory::createFromContainer($container);
 $app->add(MethodOverrideMiddleware::class);
 $app->addErrorMiddleware(true, true, true);
 
-$router = $app->getRouteCollector()->getRouteParser();
-
-$app->get('/router', function ($request, $response) use ($router) {
-    $router->urlFor('urls.index');
-    $router->urlFor('urls.store');
-    $router->urlFor('urls.show');
-    $router->urlFor('urls.checks');
-
-    return $this->get('renderer')->render($response, 'index.phtml');
+$container->set('router', function () use ($app) {
+    $router = $app->getRouteCollector()->getRouteParser();;
+    return $router;
 });
+//$this->get('router')
+
+//$app->get('/router', function ($request, $response) use ($router) {
+//    $router->urlFor('urls.index');
+//    $router->urlFor('urls.store');
+//    $router->urlFor('urls.show');
+//    $router->urlFor('urls.checks');
+//
+//    return $this->get('renderer')->render($response, 'index.phtml');
+//});
 
 $app->get('/', function ($request, $response) {
     $params = [];
+//    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'index.phtml', $params);
-});
-
-$app->get('/createTables', function ($request, $response) {
-    $tableCreator = new PostgreSQLCreateTable($this->get('connection'));
-    $tables = $tableCreator->createTables();
-    $tablesCheck = $tableCreator->createTablesWithChecks();
-    return $response;
 });
 
 
@@ -84,6 +77,8 @@ $app->get('/urls', function ($request, $response) {
         ORDER BY urls.id DESC'
     );
     $params = ['data' => $dataFromDB];
+
+//    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'urls/index.phtml', $params);
 })->setName('urls.index');
 
@@ -110,7 +105,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
         $searchName = $dataBase->query('SELECT id FROM urls WHERE name = :name', $urls);
 
         if (count($searchName) !== 0) {
-            $url = $router->urlFor('urls.show', ['id' => $searchName[0]['id']]);
+            $url = $this->get('router')->urlFor('urls.show', ['id' => $searchName[0]['id']]);
             $this->get('flash')->addMessage('success', 'Страница уже существует');
             return $response->withRedirect($url);
         }
@@ -120,7 +115,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
         $id = $dataBase->query('SELECT MAX(id) FROM urls');
 
         $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
-        $url = $router->urlFor('urls.show', ['id' => $id[0]['max']]);
+        $url = $this->get('router')->urlFor('urls.show', ['id' => $id[0]['max']]);
         return $response->withRedirect($url);
     } else {
         if (isset($urls) and strlen($urls['name']) < 1) {
@@ -168,7 +163,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
     } catch (ConnectException $e) {
         $this->get('flash')->addMessage('failure', 'Произошла ошибка при проверке, не удалось подключиться');
 
-        $url = $router->urlFor('urls.show', ['id' => $url_id]);
+        $url = $this->get('router')->urlFor('urls.show', ['id' => $url_id]);
         return $response->withRedirect($url);
     } catch (ClientException $e) {
         if ($e->getResponse()->getStatusCode() != 200) {
@@ -181,13 +176,13 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
             VALUES(:url_id, :status, :title, :h1, :meta, :time)', $checkUrl);
             $this->get('flash')->addMessage('warning', 'Проверка была выполнена успешно, но сервер ответил с ошибкой');
 
-            $url = $router->urlFor('urls.show', ['id' => $url_id]);
+            $url = $this->get('router')->urlFor('urls.show', ['id' => $url_id]);
             return $response->withRedirect($url);
         }
     } catch (Throwable $e) {
         $this->get('flash')->addMessage('failure', 'Произошла ошибка при проверке');
 
-        $url = $router->urlFor('urls.show', ['id' => $url_id]);
+        $url = $this->get('router')->urlFor('urls.show', ['id' => $url_id]);
         return $response->withRedirect($url);
     }
 
@@ -231,7 +226,7 @@ $app->post('/urls/{id}/checks', function ($request, $response, $args) use ($rout
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     }
 
-    $url = $router->urlFor('urls.show', ['id' => $url_id]);
+    $url = $this->get('router')->urlFor('urls.show', ['id' => $url_id]);
     return $response->withRedirect($url, 302);
 })->setName('urls.checks');
 
