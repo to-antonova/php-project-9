@@ -9,8 +9,6 @@ use Slim\Middleware\MethodOverrideMiddleware;
 use Hexlet\Code\Connection;
 use Hexlet\Code\PostgreSQLCreateTable;
 use Hexlet\Code\PgsqlActions;
-use Slim\Flash\Messages;
-use Valitron\Validator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
@@ -44,25 +42,23 @@ $app->add(MethodOverrideMiddleware::class);
 $app->addErrorMiddleware(true, true, true);
 
 $container->set('router', function () use ($app) {
-    $router = $app->getRouteCollector()->getRouteParser();;
+    $router = $app->getRouteCollector()->getRouteParser();
     return $router;
 });
-//$this->get('router')
-
-//$app->get('/router', function ($request, $response) use ($router) {
-//    $router->urlFor('urls.index');
-//    $router->urlFor('urls.store');
-//    $router->urlFor('urls.show');
-//    $router->urlFor('urls.checks');
-//
-//    return $this->get('renderer')->render($response, 'index.phtml');
-//});
 
 $app->get('/', function ($request, $response) {
     $params = [];
+
 //    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'index.phtml', $params);
 });
+
+//$app->get('/createTables', function ($request, $response) {
+//    $tableCreator = new PostgreSQLCreateTable($this->get('connection'));
+//    $tables = $tableCreator->createTables();
+//    $tablesCheck = $tableCreator->createTablesWithChecks();
+//    return $response;
+//});
 
 
 //////////////////////////////////////      /urls       ///////////////////////////////////////////////
@@ -83,7 +79,7 @@ $app->get('/urls', function ($request, $response) {
 })->setName('urls.index');
 
 
-$app->post('/urls', function ($request, $response) use ($router) {
+$app->post('/urls', function ($request, $response) {
     $urls = $request->getParsedBodyParam('url');
     $dataBase = new PgsqlActions($this->get('connection'));
     $errors = [];
@@ -148,7 +144,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 })->setName('urls.show');
 
 
-$app->post('/urls/{id}/checks', function ($request, $response, $args) use ($router) {
+$app->post('/urls/{id}/checks', function ($request, $response, $args) {
     $url_id = $args['id'];
     $pdo = Connection::get()->connect();
     $dataBase = new PgsqlActions($pdo);
