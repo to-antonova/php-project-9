@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS urls;
-DROP TABLE IF EXISTS urls_checks;
-
 CREATE TABLE IF NOT EXISTS urls (
     id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name varchar(255),

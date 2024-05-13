@@ -32,13 +32,14 @@ final class Connection
             $params['user'] = isset($databaseUrl['user']) ? $databaseUrl['user'] : null;
             $params['password'] = isset($databaseUrl['pass']) ? $databaseUrl['pass'] : null;
         } else {
-        // чтение параметров в файле конфигурации ini
+        // чтение параметров в файле конфигурации
             $params = parse_ini_file(__DIR__ . '/../database.env');
         }
         if ($params === false) {
             throw new \Exception("Error reading database configuration file");
         }
-
+        echo '!!!!!!!!!!!!!!!!!!!!!!!!'.$params['port'].PHP_EOL;
+        echo '!!!!!!!!!!!!!!!!!!!!!!!!'.$params['database'].PHP_EOL;
         // подключение к базе данных postgresql
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
