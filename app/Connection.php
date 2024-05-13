@@ -38,8 +38,7 @@ final class Connection
         if ($params === false) {
             throw new \Exception("Error reading database configuration file");
         }
-        echo '!!!!!!!!!!!!!!!!!!!!!!!!'.$params['port'].PHP_EOL;
-        echo '!!!!!!!!!!!!!!!!!!!!!!!!'.$params['database'].PHP_EOL;
+
         // подключение к базе данных postgresql
         $conStr = sprintf(
             "pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s",
