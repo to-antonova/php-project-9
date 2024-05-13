@@ -53,13 +53,6 @@ $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml', $params);
 });
 
-//$app->get('/createTables', function ($request, $response) {
-//    $tableCreator = new PostgreSQLCreateTable($this->get('connection'));
-//    $tables = $tableCreator->createTables();
-//    $tablesCheck = $tableCreator->createTablesWithChecks();
-//    return $response;
-//});
-
 
 //////////////////////////////////////      /urls       ///////////////////////////////////////////////
 
@@ -121,6 +114,8 @@ $app->post('/urls', function ($request, $response) {
         }
     }
     $params = ['errors' => $errors];
+
+    $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
 })->setName('urls.store');
 
