@@ -2,7 +2,7 @@
 
 namespace Hexlet\Code;
 
-class PgsqlActions
+class Database
 {
     /**
      * объект PDO
@@ -18,10 +18,6 @@ class PgsqlActions
     {
         $this->pdo = $pdo;
     }
-
-    /**
-     * создание таблиц
-     */
 
     public function query(string $sql, array $params = [])
     {

@@ -3,17 +3,21 @@
         <h1>Сайты</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap" data-test="urls">
-                <tbody>
+                <thead>
                 <tr>
                     <th>ID</th>
                     <th>Имя</th>
                     <th>Последняя проверка</th>
                     <th>Код ответа</th>
                 </tr>
+                </thead>
+                <tbody>
                 <?php foreach ($data as $item): ?>
                     <tr>
                         <td><?= isset($item['id']) ? htmlspecialchars($item['id']) : '' ?></td>
                         <td>
+<!--                            $this->get('router')->urlFor('urls.show', ['id' => $item['id']])-->
+<!--                            <router-link>-->
                             <a href="/urls/<?=(int)$item['id']?>">
                                 <?= isset($item['name']) ? htmlspecialchars($item['name']) : '' ?>
                             </a>

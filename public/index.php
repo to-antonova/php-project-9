@@ -8,7 +8,7 @@ use DI\Container;
 use Slim\Middleware\MethodOverrideMiddleware;
 use Hexlet\Code\Connection;
 use Hexlet\Code\PostgreSQLCreateTable;
-use Hexlet\Code\PgsqlActions;
+use Hexlet\Code\Database;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +33,7 @@ $container->set('flash', function () {
 });
 
 $container->set('connection', function () {
-    $pdo = Connection::get()->connect();
+    $pdo = Connection::get()->connect();////////////////////////////////////////////////////////////////////////////////
     return $pdo;
 });
 
@@ -47,7 +47,8 @@ $container->set('router', function () use ($app) {
 });
 
 $app->get('/', function ($request, $response) {
-    $params = [];
+    $navLink = 'main';
+    $params = ['navLink' => $navLink];
 
     $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'index.phtml', $params);
@@ -57,7 +58,7 @@ $app->get('/', function ($request, $response) {
 //////////////////////////////////////      /urls       ///////////////////////////////////////////////
 
 $app->get('/urls', function ($request, $response) {
-    $dataBase = new PgsqlActions($this->get('connection'));
+    $dataBase = new Database($this->get('connection'));
     $dataFromDB = $dataBase->query(
         'SELECT MAX(urls_checks.created_at) AS created_at, urls_checks.status_code, urls.id, urls.name
         FROM urls
@@ -65,7 +66,11 @@ $app->get('/urls', function ($request, $response) {
         GROUP BY urls_checks.url_id, urls.id, urls_checks.status_code
         ORDER BY urls.id DESC'
     );
-    $params = ['data' => $dataFromDB];
+    $navLink = 'sites';
+    $params = [
+        'data' => $dataFromDB,
+        'navLink' => $navLink
+    ];
 
     $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'urls/index.phtml', $params);
@@ -74,7 +79,7 @@ $app->get('/urls', function ($request, $response) {
 
 $app->post('/urls', function ($request, $response) {
     $urls = $request->getParsedBodyParam('url');
-    $dataBase = new PgsqlActions($this->get('connection'));
+    $dataBase = new Database($this->get('connection'));
     $errors = [];
 
     try {
@@ -113,7 +118,12 @@ $app->post('/urls', function ($request, $response) {
             $errors['type'] = 'Некорректный URL';
         }
     }
-    $params = ['errors' => $errors];
+
+    $navLink = 'sites';
+    $params = [
+        'errors' => $errors,
+        'navLink' => $navLink
+    ];
 
     $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
@@ -125,15 +135,19 @@ $app->post('/urls', function ($request, $response) {
 $app->get('/urls/{id}', function ($request, $response, $args) {
     $messages = $this->get('flash')->getMessages();
 
-    $dataBase = new PgsqlActions($this->get('connection'));
+    $dataBase = new Database($this->get('connection'));
     $dataFromDB = $dataBase->query('SELECT * FROM urls WHERE id = :id', $args);
     $dataCheckUrl = $dataBase->query('SELECT * FROM urls_checks WHERE url_id = :id ORDER BY id DESC', $args);
+    $navLink = '';
 
-    $params = ['id' => $dataFromDB[0]['id'],
+    $params = [
+        'id' => $dataFromDB[0]['id'],
         'name' => $dataFromDB[0]['name'],
         'created_at' => $dataFromDB[0]['created_at'],
         'flash' => $messages,
-        'urls' => $dataCheckUrl];
+        'urls' => $dataCheckUrl,
+        'navLink' => $navLink
+    ];
 
     $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'urls/show.phtml', $params);
@@ -142,8 +156,8 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 
 $app->post('/urls/{id}/checks', function ($request, $response, $args) {
     $url_id = $args['id'];
-    $pdo = Connection::get()->connect();
-    $dataBase = new PgsqlActions($pdo);
+    $pdo = Connection::get()->connect();///////////////////////////////////////////////////////////////////////////////
+    $dataBase = new Database($pdo);
 
     $checkUrl['url_id'] = $args['id'];
     $name = $dataBase->query('SELECT name FROM urls WHERE id = :url_id', $checkUrl);

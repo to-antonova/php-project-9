@@ -21,15 +21,11 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Главная</a>
-
-<!--                            --><?php //if ($navLink = 'Main') : ?><!--active--><?php //endif ?><!--" href="/">Главная</a>-->
-
+<!--                            --><?php //$navLink == 'main' ? 'active' : '' ?><!--" href="/">Главная</a>-->
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/urls">Сайты</a>
-
-<!--                            --><?php //if ($navLink = 'Sites') : ?><!--active--><?php //endif ?><!--" href="/urls">Сайты</a>-->
-
+<!--                            --><?php //$navLink == 'sites' ? 'active' : '' ?><!--" href="/urls">Сайты</a>-->
                     </li>
                 </ul>
             </div>

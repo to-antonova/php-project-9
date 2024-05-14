@@ -8,7 +8,7 @@
         },
         "files": [
             "app/Connection.php",
-            "app/PgsqlActions.php",
+            "app/Database.php",
             "app/PostgreSQLCreateTable.php"
         ]
     },
