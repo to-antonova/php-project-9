@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var string $navLink
  * @var string $content
  * @var Slim\Interfaces\RouteParserInterface $router
  */
+
 ?>
 
 <!DOCTYPE html>
