@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var array $data
+ * @var Slim\Interfaces\RouteParserInterface $router
+ */
+?>
+
 <div>
     <div class="container-lg mt-3">
         <h1>Сайты</h1>
@@ -16,9 +23,7 @@
                     <tr>
                         <td><?= isset($item['id']) ? htmlspecialchars($item['id']) : '' ?></td>
                         <td>
-<!--                            $this->get('router')->urlFor('urls.show', ['id' => $item['id']])-->
-<!--                            <router-link>-->
-                            <a href="/urls/<?=(int)$item['id']?>">
+                            <a href="<?= $router->urlFor('urls.show', ['id' => $item['id']]) ?>">
                                 <?= isset($item['name']) ? htmlspecialchars($item['name']) : '' ?>
                             </a>
                         </td>

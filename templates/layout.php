@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var string $navLink
+ * @var string $content
+ * @var Slim\Interfaces\RouteParserInterface $router
+ */
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +20,7 @@
 <header class="flex-shrink-0">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark px-2">
         <div class="container-fluid d-flex justify-content-start px-2">
-            <a class="navbar-brand" href="/">Анализатор страниц</a>
+            <a class="navbar-brand" href="<?= $router->urlFor('main') ?>">Анализатор страниц</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -20,12 +28,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Главная</a>
-<!--                            --><?php //$navLink == 'main' ? 'active' : '' ?><!--" href="/">Главная</a>-->
+                        <a class="nav-link <?= $navLink == MAIN_PAGE ? 'active' : '' ?>" href="<?= $router->urlFor('main') ?>">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/urls">Сайты</a>
-<!--                            --><?php //$navLink == 'sites' ? 'active' : '' ?><!--" href="/urls">Сайты</a>-->
+                        <a class="nav-link <?= $navLink == SITES_PAGE ? 'active' : '' ?>" href="<?= $router->urlFor('urls.index') ?>">Сайты</a>
                     </li>
                 </ul>
             </div>
@@ -33,7 +39,7 @@
     </nav>
 </header>
 <main class="flex-grow-1">
-    <?=$content?>
+    <?= $content?>
 </main>
 </body>
 <div>

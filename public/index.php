@@ -20,6 +20,9 @@ use Carbon\Carbon;
 
 session_start();
 
+const MAIN_PAGE = "MAIN_PAGE";
+const SITES_PAGE = "SITES_PAGE";
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeload();
 
@@ -32,10 +35,7 @@ $container->set('flash', function () {
     return new Slim\Flash\Messages();
 });
 
-$container->set('connection', function () {
-    $pdo = Connection::get()->connect();////////////////////////////////////////////////////////////////////////////////
-    return $pdo;
-});
+$container->set('connection', Connection::connect());
 
 $app = AppFactory::createFromContainer($container);
 $app->add(MethodOverrideMiddleware::class);
@@ -47,12 +47,13 @@ $container->set('router', function () use ($app) {
 });
 
 $app->get('/', function ($request, $response) {
-    $navLink = 'main';
-    $params = ['navLink' => $navLink];
-
+    $params = [
+        'navLink' => MAIN_PAGE,
+        'router' => $this->get('router')
+    ];
     $this->get('renderer')->setLayout('layout.php');
     return $this->get('renderer')->render($response, 'index.phtml', $params);
-});
+})->setName('main');
 
 
 //////////////////////////////////////      /urls       ///////////////////////////////////////////////
@@ -66,10 +67,10 @@ $app->get('/urls', function ($request, $response) {
         GROUP BY urls_checks.url_id, urls.id, urls_checks.status_code
         ORDER BY urls.id DESC'
     );
-    $navLink = 'sites';
     $params = [
         'data' => $dataFromDB,
-        'navLink' => $navLink
+        'navLink' => SITES_PAGE,
+        'router' => $this->get('router')
     ];
 
     $this->get('renderer')->setLayout('layout.php');
@@ -119,10 +120,9 @@ $app->post('/urls', function ($request, $response) {
         }
     }
 
-    $navLink = 'sites';
     $params = [
         'errors' => $errors,
-        'navLink' => $navLink
+        'router' => $this->get('router')
     ];
 
     $this->get('renderer')->setLayout('layout.php');
@@ -138,7 +138,6 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
     $dataBase = new Database($this->get('connection'));
     $dataFromDB = $dataBase->query('SELECT * FROM urls WHERE id = :id', $args);
     $dataCheckUrl = $dataBase->query('SELECT * FROM urls_checks WHERE url_id = :id ORDER BY id DESC', $args);
-    $navLink = '';
 
     $params = [
         'id' => $dataFromDB[0]['id'],
@@ -146,7 +145,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
         'created_at' => $dataFromDB[0]['created_at'],
         'flash' => $messages,
         'urls' => $dataCheckUrl,
-        'navLink' => $navLink
+        'router' => $this->get('router')
     ];
 
     $this->get('renderer')->setLayout('layout.php');
@@ -156,7 +155,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) {
 
 $app->post('/urls/{id}/checks', function ($request, $response, $args) {
     $url_id = $args['id'];
-    $pdo = Connection::get()->connect();///////////////////////////////////////////////////////////////////////////////
+    $pdo = $this->get('connection');
     $dataBase = new Database($pdo);
 
     $checkUrl['url_id'] = $args['id'];
